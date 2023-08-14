@@ -81,7 +81,7 @@ SmallVector<unsigned, 2> warpsPerTileMI200(triton::DotOp dotOp,
   auto filter = [&dotOp](Operation *op) {
     return op->getParentRegion() == dotOp->getParentRegion();
   };
-  auto slices = mlir::getSlice(dotOp, filter);
+  auto slices = mlir::getSlice(dotOp, {filter});
   for (Operation *op : slices)
     if (isa<triton::DotOp>(op) && (op != dotOp))
       return {(unsigned)numWarps, 1};
@@ -123,7 +123,7 @@ public:
     auto filter = [&dotOp](Operation *op) {
       return op->getParentRegion() == dotOp->getParentRegion();
     };
-    auto slices = mlir::getSlice(dotOp, filter);
+    auto slices = mlir::getSlice(dotOp, {filter});
     for (Operation *op : slices) {
       if (isa<triton::DotOp>(op) && (op != dotOp))
         return true;

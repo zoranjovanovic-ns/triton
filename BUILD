@@ -268,22 +268,6 @@ gentbl_cc_library(
     deps = ["td_files"],
 )
 
-gentbl_cc_library(
-    name = "triton_target_llvmir_passes_inc_gen",
-    tbl_outs = [
-        (
-            [
-                "--gen-pass-decls",
-                "--name=TritonLLVMIR",
-            ],
-            "include/triton/Target/LLVMIR/Passes.h.inc",
-        ),
-    ],
-    tblgen = "@llvm-project//mlir:mlir-tblgen",
-    td_file = "include/triton/Target/LLVMIR/Passes.td",
-    deps = ["td_files"],
-)
-
 cc_library(
     name = "TritonAnalysis",
     srcs = glob(["lib/Analysis/*.cpp"]),
@@ -317,7 +301,6 @@ cc_library(
         "include/triton/Dialect/Triton/IR/*.h",
         "include/triton/Dialect/TritonGPU/IR/*.h",
     ]),
-    copts = _no_unused_variable,
     includes = ["include"],
     deps = [
         ":triton_dialect_inc_gen",
@@ -378,7 +361,7 @@ cc_library(
         "lib/Dialect/TritonGPU/Transforms/*.h",
     ]),
     hdrs = glob(["include/triton/Dialect/TritonGPU/Transforms/*.h"]),
-    copts = _no_unused_variable,
+    copts = _no_unused_variable + ["-DTRITONGPU_DEFAULT_WARPSIZE=64"],
     includes = ["include"],
     deps = [
         ":TritonAnalysis",
@@ -489,7 +472,6 @@ cc_library(
     deps = [
         ":TritonGPUToLLVM",
         ":TritonTransforms",
-        ":triton_target_llvmir_passes_inc_gen",
         "@llvm-project//llvm:BinaryFormat",
         "@llvm-project//llvm:Core",
         "@llvm-project//llvm:IRReader",
